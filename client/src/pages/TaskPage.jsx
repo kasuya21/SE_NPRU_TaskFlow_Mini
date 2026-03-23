@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import useTaskStore from "../store/taskStore";
 import Swal from "sweetalert2";
 
@@ -11,6 +12,7 @@ const TaskPage = () => {
   const [form, setForm] = useState(empty);
   const [editId, setEditId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => { fetchTasks(); }, []);
 
@@ -24,12 +26,12 @@ const TaskPage = () => {
     try {
       editId ? await updateTask(editId, form) : await createTask(form);
       setModalOpen(false);
-      Swal.fire({ icon: "success", title: editId ? "QUEST UPDATED!" : "QUEST ADDED! 🍄", timer: 1200, showConfirmButton: false });
+      Swal.fire({ icon: "success", title: editId ? "TASK UPDATED!" : "TASK ADDED! 🍄", timer: 1200, showConfirmButton: false, background: "#fff" });
     } catch (_) {}
   };
 
   const handleDelete = async (id) => {
-    const r = await Swal.fire({ title: "DELETE THIS QUEST?", icon: "warning", showCancelButton: true, confirmButtonText: "DELETE", cancelButtonText: "CANCEL", background: "#fff", color: "#000" });
+    const r = await Swal.fire({ title: "DELETE THIS TASK?", icon: "warning", showCancelButton: true, confirmButtonText: "DELETE", cancelButtonText: "CANCEL", background: "#fff", color: "#000" });
     if (r.isConfirmed) await deleteTask(id);
   };
 
@@ -37,18 +39,25 @@ const TaskPage = () => {
 
   return (
     <div style={{ maxWidth: "860px", margin: "0 auto", padding: "32px 16px 100px" }}>
+      <style>{`
+        .task-card-active:hover {
+          transform: translateY(-4px);
+          box-shadow: 8px 8px 0 var(--mario-black);
+        }
+      `}</style>
+      
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <div className="pixel-font" style={{ display: "inline-block", background: "var(--mario-red)", border: "6px solid var(--mario-black)", boxShadow: "6px 6px 0 var(--mario-black)", padding: "12px 20px", marginBottom: "12px" }}>
-            <span style={{ color: "var(--mario-yellow)", fontSize: "18px", textShadow: "2px 2px 0 var(--mario-black)" }}>📋 MY QUESTS</span>
+            <span style={{ color: "var(--mario-yellow)", fontSize: "18px", textShadow: "2px 2px 0 var(--mario-black)" }}>📋 MY TASKS</span>
           </div>
           <p className="pixel-font" style={{ color: "white", fontSize: "12px", textShadow: "2px 2px 0 var(--mario-black)" }}>
             ★ {done}/{tasks.length} COMPLETED
           </p>
         </div>
         <button className="pixel-btn pixel-btn-yellow" onClick={openCreate} style={{ fontSize: "12px", padding: "12px 20px" }}>
-          + NEW QUEST
+          + NEW TASK
         </button>
       </div>
 
@@ -58,7 +67,12 @@ const TaskPage = () => {
       {/* Task list */}
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         {tasks.map((task) => (
-          <div key={task._id} className="pixel-box" style={{ padding: "24px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "16px" }}>
+          <div 
+            key={task._id} 
+            className="pixel-box task-card-active" 
+            style={{ padding: "24px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "16px", cursor: "pointer", transition: "transform 0.1s, box-shadow 0.1s" }}
+            onClick={() => navigate(`/tasks/${task._id}`)}
+          >
             <div style={{ flex: 1 }}>
               <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
                 <span className="pixel-font" style={{ fontSize: "14px", color: "var(--mario-dark)" }}>{task.title}</span>
@@ -69,38 +83,50 @@ const TaskPage = () => {
               {task.dueDate && <p className="pixel-font" style={{ fontSize: "10px", color: "#666" }}>DUE: {new Date(task.dueDate).toLocaleDateString("th-TH")}</p>}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              <button className="pixel-btn pixel-btn-yellow" style={{ fontSize: "10px", padding: "8px 12px" }} onClick={() => openEdit(task)}>✏ EDIT</button>
-              <button className="pixel-btn pixel-btn-danger" style={{ fontSize: "10px", padding: "8px 12px" }} onClick={() => handleDelete(task._id)}>✕ DEL</button>
+              <button 
+                className="pixel-btn pixel-btn-yellow" 
+                style={{ fontSize: "10px", padding: "8px 12px" }} 
+                onClick={(e) => { e.stopPropagation(); openEdit(task); }}
+              >
+                ✏ EDIT
+              </button>
+              <button 
+                className="pixel-btn pixel-btn-danger" 
+                style={{ fontSize: "10px", padding: "8px 12px" }} 
+                onClick={(e) => { e.stopPropagation(); handleDelete(task._id); }}
+              >
+                ✕ DEL
+              </button>
             </div>
           </div>
         ))}
         {!loading && tasks.length === 0 && (
           <div className="pixel-box" style={{ padding: "60px", textAlign: "center" }}>
             <div className="pixel-font" style={{ fontSize: "48px", color: "var(--mario-dark)", marginBottom: "16px" }}>?</div>
-            <p className="pixel-font" style={{ fontSize: "16px", color: "#555" }}>NO QUESTS YET!</p>
-            <p style={{ fontSize: "15px", color: "#888", fontWeight: "bold", marginTop: "12px" }}>CLICK + NEW QUEST TO START</p>
+            <p className="pixel-font" style={{ fontSize: "16px", color: "#555" }}>NO TASKS YET!</p>
+            <p style={{ fontSize: "15px", color: "#888", fontWeight: "bold", marginTop: "12px" }}>CLICK + NEW TASK TO START</p>
           </div>
         )}
       </div>
 
       {/* Modal */}
       {modalOpen && (
-        <div className="pixel-modal-wrap">
+        <div className="pixel-modal-wrap" onClick={(e) => e.stopPropagation()}>
           <div className="pixel-modal">
-            <div className="pixel-modal-title">{editId ? "✏ EDIT QUEST" : "★ NEW QUEST"}</div>
+            <div className="pixel-modal-title">{editId ? "✏ EDIT TASK" : "★ NEW TASK"}</div>
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div>
-                <label className="pixel-label">QUEST NAME</label>
-                <input name="title" placeholder="Enter quest name..." className="pixel-input" value={form.title} onChange={handleChange} required />
+                <label className="pixel-label">TASK NAME</label>
+                <input name="title" placeholder="Enter task name..." className="pixel-input bg-white text-black" value={form.title} onChange={handleChange} required />
               </div>
               <div>
                 <label className="pixel-label">DESCRIPTION</label>
-                <textarea name="description" placeholder="Describe the quest..." className="pixel-input" value={form.description} onChange={handleChange} required />
+                <textarea name="description" placeholder="Describe the task..." className="pixel-input bg-white text-black" value={form.description} onChange={handleChange} required />
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                 <div>
                   <label className="pixel-label">STATUS</label>
-                  <select name="status" className="pixel-input" value={form.status} onChange={handleChange}>
+                  <select name="status" className="pixel-input bg-white text-black" value={form.status} onChange={handleChange}>
                     <option value="pending">PENDING</option>
                     <option value="in-progress">IN PROGRESS</option>
                     <option value="completed">COMPLETED</option>
@@ -108,7 +134,7 @@ const TaskPage = () => {
                 </div>
                 <div>
                   <label className="pixel-label">PRIORITY</label>
-                  <select name="priority" className="pixel-input" value={form.priority} onChange={handleChange}>
+                  <select name="priority" className="pixel-input bg-white text-black" value={form.priority} onChange={handleChange}>
                     <option value="low">LOW</option>
                     <option value="medium">MEDIUM</option>
                     <option value="high">HIGH</option>
@@ -117,7 +143,7 @@ const TaskPage = () => {
               </div>
               <div>
                 <label className="pixel-label">DUE DATE</label>
-                <input name="dueDate" type="date" className="pixel-input" style={{fontFamily: "Nunito"}} value={form.dueDate} onChange={handleChange} required />
+                <input name="dueDate" type="date" className="pixel-input bg-white text-black" style={{fontFamily: "Nunito"}} value={form.dueDate} onChange={handleChange} required />
               </div>
               <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end", marginTop: "12px" }}>
                 <button type="button" className="pixel-btn pixel-btn-gray" onClick={() => setModalOpen(false)}>CANCEL</button>

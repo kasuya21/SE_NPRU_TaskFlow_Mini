@@ -7,8 +7,8 @@ const FEATURES = [
   {
     world: "WORLD 1-1",
     icon: "📜",
-    title: "QUEST LOG",
-    desc: "Create new quests,\nset deadlines, and\nprioritize your tasks to\nsave the Princess!",
+    title: "TASK LOG",
+    desc: "Create new tasks,\nset deadlines, and\nprioritize your work to\nsave the Princess!",
     btnColor: "pixel-btn-primary",
   },
   {
@@ -142,7 +142,7 @@ const HomePage = () => {
         </div>
         {!user && (
           <p style={{ fontWeight: 800, fontSize: "18px", color: "white", marginTop: "32px", textShadow: "2px 2px 0 var(--mario-black)", background: "rgba(0,0,0,0.3)", display: "inline-block", padding: "10px 20px", borderRadius: "10px" }}>
-            Organize your quests. Defeat procrastination. Save the Princess! 🏰
+            Organize your tasks. Defeat procrastination. Save the Princess! 🏰
           </p>
         )}
       </div>
@@ -172,7 +172,7 @@ const HomePage = () => {
           // USER DASHBOARD (PIZZA CHART)
           <div>
             <h2 className="pixel-font" style={{ textAlign: "center", color: "white", textShadow: "3px 3px 0 var(--mario-black)", fontSize: "20px", marginBottom: "40px" }}>
-              ── QUEST SUMMARY ──
+              ── TASK SUMMARY ──
             </h2>
             
             <div className="stage-card" style={{ maxWidth: "600px", margin: "0 auto", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: "40px" }}>
@@ -183,7 +183,7 @@ const HomePage = () => {
               
               {/* Legend Data */}
               <div style={{ textAlign: "left" }}>
-                <p className="pixel-font" style={{ fontSize: "12px", marginBottom: "16px", color: "var(--mario-dark)" }}>TOTAL QUESTS: {total}</p>
+                <p className="pixel-font" style={{ fontSize: "12px", marginBottom: "16px", color: "var(--mario-dark)" }}>TOTAL TASKS: {total}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
                   <div style={{ width: "16px", height: "16px", background: "var(--mario-green)", border: "2px solid var(--mario-black)" }}></div>
                   <span className="pixel-font" style={{ fontSize: "10px", color: "#333" }}>COMPLETED: {completed}</span>

@@ -26,7 +26,7 @@ const Navbar = () => {
             to="/tasks" 
             className="pixel-font bg-[var(--mario-yellow)] text-[var(--mario-black)] px-4 py-2 border-[3px] border-[var(--mario-black)] shadow-[4px_4px_0_var(--mario-black)] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_var(--mario-black)] active:translate-y-[2px] active:shadow-[1px_1px_0_var(--mario-black)] transition-all text-[11px]"
           >
-            ★ MY QUESTS
+            ★ MY TASKS
           </Link>
         )}
       </div>

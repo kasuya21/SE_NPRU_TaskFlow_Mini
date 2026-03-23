@@ -6,6 +6,7 @@ import LoginPage    from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import TaskPage     from "../pages/TaskPage";
 import ProfilePage  from "../pages/ProfilePage";
+import TaskDetailPage from "../pages/TaskDetailPage";
 
 const AppRoutes = () => {
   return (
@@ -16,8 +17,9 @@ const AppRoutes = () => {
       <Route path="/register" element={<RegisterPage />} />
 
       {/* Private routes */}
-      <Route path="/tasks"   element={<PrivateRoute><TaskPage /></PrivateRoute>} />
-      <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+      <Route path="/tasks"      element={<PrivateRoute><TaskPage /></PrivateRoute>} />
+      <Route path="/tasks/:id"  element={<PrivateRoute><TaskDetailPage /></PrivateRoute>} />
+      <Route path="/profile"    element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
 
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
